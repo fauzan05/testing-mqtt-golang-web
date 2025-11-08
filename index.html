@@ -13,9 +13,101 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f3f6f9;
             min-height: 100vh;
-            padding: 20px;
+            padding: 0;
+            color: #222;
+        }
+
+        /* Sidebar layout similar to the provided screenshot */
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: linear-gradient(180deg, #4fc3d9 0%, #3bb6d6 100%);
+            padding: 24px 16px;
+            color: white;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+        }
+
+        .brand {
+            display:flex;
+            gap:12px;
+            align-items:center;
+            margin-bottom:18px;
+        }
+
+        .brand .logo {
+            width:46px;
+            height:46px;
+            background: white;
+            border-radius:8px;
+        }
+
+        .brand h2 { font-size:18px; margin:0; }
+
+        .sidebar .user { margin:12px 0 18px; font-size:13px; }
+
+        .nav {
+            list-style:none;
+            padding:0;
+            margin-top:8px;
+        }
+
+        .nav li { padding:8px 6px; border-radius:6px; margin-bottom:4px; cursor:pointer; }
+        .nav li:hover { background: rgba(255,255,255,0.06); }
+
+        .main {
+            flex:1;
+            padding:28px 32px;
+        }
+
+        .topbar {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            margin-bottom:18px;
+        }
+
+        .filters {
+            display:flex;
+            gap:10px;
+            align-items:center;
+        }
+
+        .card-row { display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:18px; }
+
+        .card {
+            background:white;
+            border-radius:10px;
+            padding:18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .card .card-title { background:#7fc9d8; color:#fff; padding:10px; border-radius:8px; text-align:center; font-weight:600; margin-bottom:12px; }
+
+        .chart-placeholder { height:170px; border-radius:8px; background: linear-gradient(180deg,#eef7fb,#f7fbfd); display:flex; align-items:center; justify-content:center; color:#2a6b77; font-weight:700; }
+
+        .kpi-row { display:grid; grid-template-columns: repeat(2,1fr); gap:20px; margin-bottom:18px; }
+
+        .kpi { background:white; border-radius:10px; padding:18px; text-align:center; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+
+        .kpi .value { font-size:28px; font-weight:800; }
+
+        .table-card { margin-top:8px; }
+
+        table.data { width:100%; border-collapse:collapse; }
+        table.data th, table.data td { padding:10px; border-bottom:1px solid #eee; font-size:13px; }
+
+        /* small responsive tweaks */
+        @media (max-width:1000px) {
+            .card-row{ grid-template-columns: 1fr; }
+            .kpi-row{ grid-template-columns: 1fr; }
+            .sidebar { display:none; }
         }
         
         .container {
@@ -111,6 +203,21 @@
         .clear-btn:hover {
             background: #dc2626;
         }
+
+        .action-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #059669;
+        }
         
         .message {
             background: #f8f9fa;
@@ -203,39 +310,133 @@
             margin-top: 5px;
         }
     </style>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>📡 MQTT Real-time Monitor</h1>
-        
-        <div class="status disconnected" id="status">
-            <span class="status-indicator"></span>
-            <span class="status-text">Connecting to WebSocket...</span>
-        </div>
-        
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="messageCount">0</div>
-                <div class="stat-label">Total Messages</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="lastUpdate">-</div>
-                <div class="stat-label">Last Update</div>
-            </div>
-        </div>
-        
-        <div class="messages-container">
-            <div class="messages-header">
-                <div class="messages-title">📨 Received Messages</div>
-                <button class="clear-btn" onclick="clearMessages()">Clear All</button>
-            </div>
-            <div id="messages">
-                <div class="no-messages">Waiting for MQTT messages...</div>
-            </div>
-        </div>
-    </div>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo"></div>
+                <div>
 
+                    <h2>SIM PDKB</h2>
+                    <button type="button" id="1" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded">Primary</button>
+
+                    <div style="font-size:12px; opacity:0.95">Kinerja PDKB Indonesia</div>
+                </div>
+            </div>
+            <div class="user">Muhammad Wahyudi<br><small>JTC PDKB GI/GITET</small></div>
+            <ul class="nav">
+                <li>Dashboard</li>
+                <li>Working Order</li>
+                <li>Job Safety Analysis</li>
+                <li>Pekerjaan PDKB</li>
+                <li>Working Permit</li>
+                <li>Data Aset</li>
+                <li>Berita</li>
+                <li>Kinerja</li>
+            </ul>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <h1 style="margin:0;">📡 Pengujian Baju Konduktif</h1>
+                <div class="filters">
+                    <select><option>Periode</option><option>Juli 2025</option></select>
+                    <select><option>PDKB</option><option>TT/TET</option></select>
+                    <select><option>Regional</option><option>Jamali</option></select>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:20px; margin-bottom:18px; align-items:center;">
+                <div style="flex:1;">
+                    <div class="status disconnected" id="status">
+                        <span class="status-indicator"></span>
+                        <span class="status-text">Connecting to WebSocket...</span>
+                    </div>
+                </div>
+                <div style="width:260px; display:flex; gap:12px;">
+                    <div class="stat-card" style="flex:1; background:rgba(255,255,255,0.95); box-shadow:none;">
+                        <div class="stat-value" id="messageCount">0</div>
+                        <div class="stat-label">Baju yang diuji dalam 1 bulan</div>
+                    </div>
+                    <div class="stat-card" style="flex:1; background:rgba(255,255,255,0.95); box-shadow:none;">
+                        <div class="stat-value" id="lastUpdate">-</div>
+                        <div class="stat-label">Last Update</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-row">
+                <div class="card">
+                    <div class="card-title">Kinerja Corrective</div>
+                    <div class="chart-placeholder">[Chart]</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Kinerja Preventive</div>
+                    <div class="chart-placeholder">[Chart]</div>
+                </div>
+            </div>
+
+            <div class="kpi-row">
+                <div class="kpi">
+                    <div style="background:#7fc9d8;padding:8px;border-radius:8px;font-weight:600;color:#fff;margin-bottom:8px;">Gain Saving</div>
+                    <div class="value">Rp 234.535.636.356</div>
+                </div>
+                <div class="kpi">
+                    <div style="background:#7fc9d8;padding:8px;border-radius:8px;font-weight:600;color:#fff;margin-bottom:8px;">kWh Terselamatkan</div>
+                    <div class="value">162.300.000 kWh</div>
+                </div>
+            </div>
+
+            <div class="card table-card card">
+                <div class="card-title">Daftar Pengujian</div>
+                <div style="margin-top:12px; overflow:auto;">
+                    <table class="data">
+                        <thead>
+                            <tr><th>No</th><th>Unit Induk</th><th>UPT</th><th>Kinerja Corrective</th><th>Kinerja Preventive</th><th>Gain Saving</th><th>kWh Terselamatkan</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>UIT JBB</td><td>UPT Cawang</td><td>49</td><td>43</td><td>Rp 1.927.921.093</td><td>45.633</td></tr>
+                            <tr><td> </td><td></td><td>UPT Pulogadung</td><td>65</td><td>53</td><td>Rp 2.922.092.018</td><td>43.454</td></tr>
+                            <tr><td> </td><td></td><td>UPT Cilegon</td><td>74</td><td>52</td><td>Rp 3.523.092.018</td><td>34.364</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Keep a compact entries area for manual test actions (preserve existing handlers) -->
+            <div style="margin-top:18px;">
+                <div id="messages" style="display:none;"></div>
+                <div id="entries" style="display:none;"></div>
+            </div>
+        </main>
+    </div>
+    <!-- Re-added jQuery for alert features; Bootstrap/JS removed intentionally. -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
+        // jQuery-based alert helper (displays a tailwind-styled toast at top-right)
+        function showAlert(message, type = 'info') {
+            const colorMap = {
+                info: 'bg-blue-500',
+                success: 'bg-green-500',
+                danger: 'bg-red-500',
+                warn: 'bg-yellow-500'
+            };
+            const cls = colorMap[type] || colorMap.info;
+            const $toast = $('<div/>')
+                .addClass(`fixed top-4 right-4 text-white px-4 py-2 rounded shadow ${cls} max-w-xs`)
+                .css({display:'none', zIndex:9999})
+                .text(message);
+            $('body').append($toast);
+            $toast.fadeIn(200).delay(3000).fadeOut(300, function(){ $toast.remove(); });
+        }
+
+        // jQuery handler for the Primary button — show a styled toast instead of alert()
+        $('#1').on('click', function() {
+            showAlert('Tombol Primary ditekan! (jQuery toast)', 'success');
+        });
         let ws;
         let messageCount = 0;
         const messagesDiv = document.getElementById('messages');
@@ -243,6 +444,10 @@
         const statusText = statusDiv.querySelector('.status-text');
         const messageCountSpan = document.getElementById('messageCount');
         const lastUpdateSpan = document.getElementById('lastUpdate');
+    const entriesDiv = document.getElementById('entries');
+    const testInput = document.getElementById('testInput');
+    const monthPicker = document.getElementById('monthPicker');
+    const loadHistoryBtn = document.getElementById('loadHistoryBtn');
 
         function connect() {
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -253,7 +458,7 @@
             ws.onopen = function() {
                 console.log('WebSocket connected');
                 statusDiv.className = 'status connected';
-                statusText.textContent = 'Connected to MQTT broker';
+                statusText.textContent = 'Alat Uji 1 Terhubung';
             };
 
             ws.onmessage = function(event) {
@@ -274,6 +479,45 @@
                 
                 // Reconnect after 3 seconds
                 setTimeout(connect, 3000);
+            };
+        }
+
+        // Record a test pair (one of the action buttons)
+        function recordPair(pairLabel) {
+            // Remove "no messages" placeholder if present
+            const placeholder = entriesDiv.querySelector('.no-messages');
+            if (placeholder) placeholder.remove();
+
+            messageCount++;
+            messageCountSpan.textContent = messageCount;
+
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            lastUpdateSpan.textContent = timeString;
+
+            const note = testInput ? testInput.value.trim() : '';
+            const entry = document.createElement('div');
+            entry.className = 'message';
+            entry.innerHTML = `
+                <div class="message-topic">Pengujian: ${pairLabel}</div>
+                <div class="message-content">${note || '<i>tanpa catatan</i>'}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+
+            entriesDiv.insertBefore(entry, entriesDiv.firstChild);
+
+            // keep only last 100 entries
+            while (entriesDiv.children.length > 100) {
+                entriesDiv.removeChild(entriesDiv.lastChild);
+            }
+        }
+
+        // Month picker handler - placeholder behavior
+        if (loadHistoryBtn) {
+            loadHistoryBtn.onclick = function() {
+                const m = monthPicker.value;
+                // Simple UI feedback — in a real app you'd fetch the history for this month
+                entriesDiv.innerHTML = `<div class="no-messages">Menampilkan histori untuk: ${m || '— (pilih bulan)'}</div>`;
             };
         }
 
