@@ -51,8 +51,8 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 
 func setupMQTT() mqtt.Client {
 	// Konfigurasi MQTT broker
-	// Ganti dengan broker MQTT Anda (contoh: "tcp://broker.emqx.io:1883" atau "tcp://localhost:1883")
-	broker := getEnvironment("MQTT_BROKER", "tcp://localhost:1883")
+	// Ganti dengan broker MQTT Anda (contoh: "tcp://broker.emqx.io:1884" atau "tcp://localhost:1884")
+	broker := getEnvironment("MQTT_BROKER", "tcp://localhost:1884")
 	clientID := getEnvironment("MQTT_CLIENT_ID", "go-mqtt-client")
 	topic := getEnvironment("MQTT_TOPIC", "golang-webserver/topic")
 
@@ -176,7 +176,7 @@ func main() {
 
 	// Info endpoint
 	app.Get("/info", func(c *fiber.Ctx) error {
-		broker := getEnvironment("MQTT_BROKER", "tcp://localhost:1883")
+		broker := getEnvironment("MQTT_BROKER", "tcp://localhost:1884")
 		topic := getEnvironment("MQTT_TOPIC", "golang-webserver/topic")
 
 		return c.JSON(fiber.Map{
