@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Real-time Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .status {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status.connected .status-indicator {
+            background-color: #4ade80;
+        }
+        
+        .status.disconnected .status-indicator {
+            background-color: #f87171;
+            animation: none;
+        }
+        
+        .status-text {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .messages-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .messages-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .messages-title {
+            font-size: 1.5em;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .clear-btn:hover {
+            background: #dc2626;
+        }
+        
+        .message {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .message-topic {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .message-content {
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+        
+        .message-time {
+            color: #888;
+            font-size: 0.85em;
+        }
+        
+        .no-messages {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+        
+        .messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .messages-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .messages-container::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📡 MQTT Real-time Monitor</h1>
+        
+        <div class="status disconnected" id="status">
+            <span class="status-indicator"></span>
+            <span class="status-text">Connecting to WebSocket...</span>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="messageCount">0</div>
+                <div class="stat-label">Total Messages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="lastUpdate">-</div>
+                <div class="stat-label">Last Update</div>
+            </div>
+        </div>
+        
+        <div class="messages-container">
+            <div class="messages-header">
+                <div class="messages-title">📨 Received Messages</div>
+                <button class="clear-btn" onclick="clearMessages()">Clear All</button>
+            </div>
+            <div id="messages">
+                <div class="no-messages">Waiting for MQTT messages...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws;
+        let messageCount = 0;
+        const messagesDiv = document.getElementById('messages');
+        const statusDiv = document.getElementById('status');
+        const statusText = statusDiv.querySelector('.status-text');
+        const messageCountSpan = document.getElementById('messageCount');
+        const lastUpdateSpan = document.getElementById('lastUpdate');
+
+        function connect() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws`;
+            
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = function() {
+                console.log('WebSocket connected');
+                statusDiv.className = 'status connected';
+                statusText.textContent = 'Connected to MQTT broker';
+            };
+
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                addMessage(data.topic, data.payload);
+            };
+
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                statusDiv.className = 'status disconnected';
+                statusText.textContent = 'Connection error';
+            };
+
+            ws.onclose = function() {
+                console.log('WebSocket disconnected');
+                statusDiv.className = 'status disconnected';
+                statusText.textContent = 'Disconnected - Reconnecting...';
+                
+                // Reconnect after 3 seconds
+                setTimeout(connect, 3000);
+            };
+        }
+
+        function addMessage(topic, payload) {
+            // Remove "no messages" text if it exists
+            const noMessages = messagesDiv.querySelector('.no-messages');
+            if (noMessages) {
+                noMessages.remove();
+            }
+
+            messageCount++;
+            messageCountSpan.textContent = messageCount;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            lastUpdateSpan.textContent = timeString;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `
+                <div class="message-topic">Topic: ${escapeHtml(topic)}</div>
+                <div class="message-content">${escapeHtml(payload)}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+
+            messagesDiv.insertBefore(messageDiv, messagesDiv.firstChild);
+
+            // Keep only last 100 messages
+            while (messagesDiv.children.length > 100) {
+                messagesDiv.removeChild(messagesDiv.lastChild);
+            }
+        }
+
+        function clearMessages() {
+            messagesDiv.innerHTML = '<div class="no-messages">Waiting for MQTT messages...</div>';
+            messageCount = 0;
+            messageCountSpan.textContent = '0';
+            lastUpdateSpan.textContent = '-';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Connect when page loads
+        connect();
+    </script>
+</body>
+</html>
