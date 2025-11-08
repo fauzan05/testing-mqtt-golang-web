@@ -154,15 +154,30 @@ func main() {
 	go broadcastMessages()
 
 	app := fiber.New(fiber.Config{
-		AppName: "MQTT Real-time Monitor",
+		AppName: "CORE - Conductive Suit Reliability Evaluator",
 	})
 
-	// Serve HTML file
+	// Serve static files
+	app.Static("/", "./")
+
+	// Main routes for pages
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendFile("./index.html")
 	})
 
-	// WebSocket endpoint
+	app.Get("/dashboard", func(c *fiber.Ctx) error {
+		return c.SendFile("./dashboard.html")
+	})
+
+	app.Get("/histori", func(c *fiber.Ctx) error {
+		return c.SendFile("./histori.html")
+	})
+
+	app.Get("/foto", func(c *fiber.Ctx) error {
+		return c.SendFile("./foto.html")
+	})
+
+	// WebSocket endpoint for real-time updates
 	app.Get("/ws", handleWebSocket())
 
 	// Health check endpoint
@@ -188,7 +203,7 @@ func main() {
 
 	port := getEnvironment("PORT", "8000")
 	fmt.Printf("\n🚀 Server started on http://localhost:%s\n", port)
-	fmt.Println("📡 MQTT Real-time Monitor is running...")
+	fmt.Println("📡 CORE - Conductive Suit Reliability Evaluator is running...")
 	fmt.Printf("🔗 Open http://localhost:%s in your browser\n\n", port)
 
 	log.Fatal(app.Listen(":" + port))

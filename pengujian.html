@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORE - Pengujian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="styles.css" rel="stylesheet">
+    <link href="form.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo"></div>
+                <div>
+                    <h2 style="font-size:28px; margin:0; font-weight:700;">CORE</h2>
+                    <div style="font-size:12px; opacity:0.95">Conductive Suit Reliability Evaluator</div>
+                </div>
+            </div>
+            <ul class="nav">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li class="active"><a href="index.html">Pengujian</a></li>
+                <li><a href="histori.html">Histori</a></li>
+                <li><a href="foto.html">Foto Conductive Suite</a></li>
+            </ul>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <h1 class="page-title">Pengukuran Resistansi Conductive Suit</h1>
+            </div>
+
+            <div class="content-card">
+                <h2 class="section-title">Pengukuran Resistansi Conductive Suit</h2>
+
+                <div style="display:flex; gap:48px; align-items:flex-start;">
+                    <!-- Left form -->
+                    <div style="flex:1; max-width:420px;">
+                        <div class="form-group">
+                            <div class="form-label">UPT</div>
+                            <input type="text" id="upt" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">Nama</div>
+                            <input type="text" id="nama" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">Kode Conductive Suite</div>
+                            <input type="text" id="kode" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">Waktu Pencucian</div>
+                            <input type="text" id="waktu" class="form-input">
+                        </div>
+                        <div class="form-group" style="margin-bottom:20px;">
+                            <div class="form-label">Tanggal Pencucian</div>
+                            <input type="date" id="tanggal" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Center diagram -->
+                    <div style="width:240px; text-align:center;">
+                        <svg width="180" height="260" viewBox="0 0 180 260" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M90 40 C 60 40, 40 60, 40 90 L 40 220 C 40 240, 60 250, 90 250 C 120 250, 140 240, 140 220 L 140 90 C 140 60, 120 40, 90 40" 
+                                  fill="none" stroke="black" stroke-width="2"/>
+                            <circle cx="90" cy="30" r="20" stroke="black" fill="none" stroke-width="2"/>
+                            <path d="M60 100 L30 140 M120 100 L150 140" stroke="black" fill="none" stroke-width="2"/>
+                            <path d="M70 220 L70 250 M110 220 L110 250" stroke="black" fill="none" stroke-width="2"/>
+                            <path d="M90 90 L90 160" stroke="black" stroke-width="2" stroke-dasharray="4"/>
+                        </svg>
+                    </div>
+
+                            <!-- Right measurement rows -->
+                    <div style="flex:1; max-width:420px;">
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <!-- R1 measurement -->
+                            <div class="measurement-row">
+                                <div class="measurement-label">R1 (sarung tangan dan tali celana)</div>
+                                <input type="text" id="R1" class="measurement-input">
+                                <button class="record-btn" data-meas="R1">Record</button>
+                            </div>                            <!-- R2-R8 measurements -->
+                            <div class="measurement-row">
+                                <div class="measurement-label">R2 (tali celana dan tudung)</div>
+                                <input type="text" id="R2" class="measurement-input">
+                                <button class="record-btn" data-meas="R2">Record</button>
+                            </div>
+
+                            <div class="measurement-row">
+                                <div class="measurement-label">R3 (tali celana dan tudung)</div>
+                                <input type="text" id="R3" class="measurement-input">
+                                <button class="record-btn" data-meas="R3">Record</button>
+                            </div>
+
+                            <div class="measurement-row">
+                                <div class="measurement-label">R4 (sarung tangan dan tali celana)</div>
+                                <input type="text" id="R4" class="measurement-input">
+                                <button class="record-btn" data-meas="R4">Record</button>
+                            </div>
+
+                            <div class="measurement-row">
+                                <div class="measurement-label">R5 (kaos kaki konduktif dan tali celana)</div>
+                                <input type="text" id="R5" class="measurement-input">
+                                <button class="record-btn" data-meas="R5">Record</button>
+                            </div>
+
+                            <div class="measurement-row">
+                                <div class="measurement-label">R6 (kaos kaki konduktif dan tali celana)</div>
+                                <input type="text" id="R6" class="measurement-input">
+                                <button class="record-btn" data-meas="R6">Record</button>
+                            </div>
+
+                            <div class="measurement-row">
+                                <div class="measurement-label">R7 (tali bonding dan baju konduktif)</div>
+                                <input type="text" id="R7" class="measurement-input">
+                                <button class="record-btn" data-meas="R7">Record</button>
+                            </div>
+
+                            <div class="measurement-row">
+                                <div class="measurement-label">R8 (tali bonding dan baju konduktif)</div>
+                                <input type="text" id="R8" class="measurement-input">
+                                <button class="record-btn" data-meas="R8">Record</button>
+                            </div>
+
+                            <!-- Submit button -->
+                            <div style="margin-top:32px; text-align:center;">
+                                <button id="submitBtn" class="bg-green-500 hover:bg-green-600 text-white px-12 py-2 rounded-lg text-sm font-semibold">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Alert function
+        function showAlert(message, type = 'info') {
+            const colorMap = {
+                info: 'bg-blue-500',
+                success: 'bg-green-500',
+                danger: 'bg-red-500',
+                warn: 'bg-yellow-500'
+            };
+            const cls = colorMap[type] || colorMap.info;
+            const $toast = $('<div/>')
+                .addClass(`fixed top-4 right-4 text-white px-4 py-2 rounded shadow ${cls} max-w-xs`)
+                .css({display:'none', zIndex:9999})
+                .text(message);
+            $('body').append($toast);
+            $toast.fadeIn(200).delay(3000).fadeOut(300, function(){ $toast.remove(); });
+        }
+
+        // Record buttons handler
+        $(document).on('click', 'button[data-meas]', function() {
+            const meas = $(this).data('meas');
+            showAlert('Data Disimpan', 'success');
+        });
+
+        // Submit button handler
+        $('#submitBtn').on('click', function(e) {
+            e.preventDefault();
+            showAlert('Data sudah disimpan', 'success');
+        });
+    </script>
+</body>
+</html>
