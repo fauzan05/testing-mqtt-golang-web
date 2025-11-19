@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Data Konduktif - CORE</title>
+    <script src="auth-check.js"></script>
+    <link rel="stylesheet" href="sidebar.css">
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;background:#f3f6f9;color:#222}
+        .app{display:flex;min-height:100vh}
+        .main{flex:1;padding:28px 32px;margin-left:220px}
+        .content-card{background:white;border-radius:10px;padding:22px 26px;box-shadow:0 6px 18px rgba(0,0,0,0.06);border:6px solid rgba(0,0,0,0.03)}
+        input,select{padding:8px;border:1px solid #ccc;border-radius:6px;width:100%;}
+        button{cursor:pointer}
+        
+        /* Modal Overlay */
+        .modal-overlay{
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.5);
+            z-index:1000;
+            animation:fadeIn 0.2s ease;
+        }
+        
+        .modal-overlay.show{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        
+        /* Modal Content */
+        .modal-content{
+            background:white;
+            border-radius:12px;
+            padding:24px;
+            max-width:600px;
+            width:90%;
+            max-height:90vh;
+            overflow-y:auto;
+            box-shadow:0 10px 40px rgba(0,0,0,0.3);
+            animation:slideIn 0.3s ease;
+            position:relative;
+        }
+        
+        .modal-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+            padding-bottom:12px;
+            border-bottom:2px solid #e0e0e0;
+        }
+        
+        .modal-header h3{
+            margin:0;
+            color:#18a0d6;
+            font-size:20px;
+        }
+        
+        .close-modal{
+            background:transparent;
+            border:none;
+            font-size:28px;
+            color:#999;
+            cursor:pointer;
+            padding:0;
+            width:32px;
+            height:32px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:4px;
+            transition:all 0.2s;
+        }
+        
+        .close-modal:hover{
+            background:#f0f0f0;
+            color:#333;
+        }
+        
+        @keyframes fadeIn{
+            from{opacity:0}
+            to{opacity:1}
+        }
+        
+        @keyframes slideIn{
+            from{transform:translateY(-50px);opacity:0}
+            to{transform:translateY(0);opacity:1}
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div id="sidebar-root"></div>
+
+        <main class="main">
+            <div class="content-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <h2 style="color:#18a0d6;margin:0">Data Konduktif</h2>
+                    <button id="toggleFormBtn" style="background:#18b0bf;color:#fff;padding:8px 16px;border-radius:8px;border:none;font-weight:600">+ Tambah Data</button>
+                </div>
+
+                <!-- Modal Popup for Form -->
+                <div id="formModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modalTitle">Input Data Baju Konduktif</h3>
+                            <button class="close-modal" id="closeModalBtn">&times;</button>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                            <div>
+                                <label style="display:block;margin-bottom:4px;font-weight:500">Nama</label>
+                                <input id="nama" type="text" placeholder="Nama pengguna">
+                            </div>
+                            <div>
+                                <label style="display:block;margin-bottom:4px;font-weight:500">Kode Baju</label>
+                                <input id="kode" type="text" placeholder="Kode baju (contoh: A1B2C3D4)">
+                            </div>
+                            <div>
+                                <label style="display:block;margin-bottom:4px;font-weight:500">Unit</label>
+                                <input id="unit" type="text" placeholder="UPT / Unit">
+                            </div>
+                            <div>
+                                <label style="display:block;margin-bottom:4px;font-weight:500">Ukuran</label>
+                                <select id="ukuran">
+                                    <option value="">Pilih ukuran</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block;margin-bottom:4px;font-weight:500">Tahun Produksi</label>
+                                <input id="tahun" type="number" min="1900" max="2100" placeholder="2024">
+                            </div>
+
+                            <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+                                <button id="cancelBtn" style="background:#6c757d;color:#fff;padding:10px 20px;border-radius:8px;border:none;font-weight:500">Batal</button>
+                                <button id="clearBtn" style="background:#eee;color:#333;padding:10px 20px;border-radius:8px;border:none;font-weight:500">Bersihkan</button>
+                                <button id="addBtn" style="background:#18b0bf;color:#fff;padding:10px 20px;border-radius:8px;border:none;font-weight:500">Simpan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Baju -->
+                <div>
+                    <h3 style="margin:0 0 8px 0">Daftar Baju Tersimpan</h3>
+                    <div style="overflow:auto;max-height:520px;border:1px solid #eee;padding:8px;border-radius:6px;background:#fafafa">
+                        <table id="table" style="width:100%;border-collapse:collapse;font-size:14px">
+                                <thead>
+                                    <tr style="text-align:left;border-bottom:1px solid #ddd">
+                                        <th style="padding:6px;width:28px">#</th>
+                                        <th style="padding:6px">Nama</th>
+                                        <th style="padding:6px">Kode</th>
+                                        <th style="padding:6px">Unit</th>
+                                        <th style="padding:6px">Ukuran</th>
+                                        <th style="padding:6px;width:90px">Tahun</th>
+                                        <th style="padding:6px;width:90px">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="sidebar.js"></script>
+
+    <script>
+        (function(){
+            const key = 'core_suit_list';
+            function read(){ return JSON.parse(localStorage.getItem(key) || '[]'); }
+            function write(arr){ localStorage.setItem(key, JSON.stringify(arr)); }
+
+            function escape(s){ return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]}); }
+
+            // Modal functions
+            const formModal = document.getElementById('formModal');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            function openModal(){
+                formModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeModal(){
+                formModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+                // reset editing mode when closing
+                editingIndex = -1;
+                document.getElementById('addBtn').textContent = 'Simpan';
+                modalTitle.textContent = 'Input Data Baju Konduktif';
+                // clear form
+                clearForm();
+            }
+            
+            function clearForm(){
+                document.getElementById('nama').value = '';
+                document.getElementById('kode').value = '';
+                document.getElementById('unit').value = '';
+                document.getElementById('ukuran').value = '';
+                document.getElementById('tahun').value = '';
+            }
+            
+            // Open modal when clicking "+ Tambah Data"
+            document.getElementById('toggleFormBtn').addEventListener('click', function(){
+                openModal();
+            });
+            
+            // Close modal buttons
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            document.getElementById('cancelBtn').addEventListener('click', closeModal);
+            
+            // Close modal when clicking outside
+            formModal.addEventListener('click', function(e){
+                if(e.target === formModal){
+                    closeModal();
+                }
+            });
+
+
+
+            let editingIndex = -1; // Track which item is being edited
+
+            function render(){
+                const tbody = document.querySelector('#table tbody');
+                const arr = read();
+                tbody.innerHTML = '';
+                arr.forEach((it, idx)=>{
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding:6px;border-bottom:1px solid #eee">${idx+1}</td>
+                        <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.nama)}</td>
+                        <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.kode)}</td>
+                        <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.unit)}</td>
+                        <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.ukuran)}</td>
+                        <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.tahun)}</td>
+                        <td style="padding:6px;border-bottom:1px solid #eee">
+                            <button data-idx="${idx}" class="edit" style="background:#ffa500;color:#fff;padding:4px 8px;border-radius:6px;border:none;margin-right:4px">Edit</button>
+                            <button data-idx="${idx}" class="del" style="background:#e74c3c;color:#fff;padding:4px 8px;border-radius:6px;border:none">Hapus</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('addBtn').addEventListener('click', function(){
+                const nama = document.getElementById('nama').value.trim();
+                const kode = document.getElementById('kode').value.trim();
+                const unit = document.getElementById('unit').value.trim();
+                const ukuran = document.getElementById('ukuran').value.trim();
+                const tahun = document.getElementById('tahun').value.trim();
+                if(!nama || !kode){ alert('Nama dan Kode wajib diisi'); return; }
+                
+                const arr = read();
+                
+                if(editingIndex >= 0){
+                    // Update existing item
+                    arr[editingIndex] = { nama, kode, unit, ukuran, tahun };
+                    write(arr);
+                    render();
+                    alert('Data berhasil diupdate!');
+                    editingIndex = -1;
+                    document.getElementById('addBtn').textContent = 'Simpan';
+                    document.querySelector('#formSection h3').textContent = 'Input Data Baju Konduktif';
+                } else {
+                    // Add new item
+                    arr.push({ nama, kode, unit, ukuran, tahun });
+                    write(arr);
+                    render();
+                    alert('Data berhasil disimpan!');
+                }
+                
+                // clear form and close modal
+                clearForm();
+                closeModal();
+            });
+
+            document.getElementById('clearBtn').addEventListener('click', function(){
+                clearForm();
+            });
+
+            document.body.addEventListener('click', function(e){
+                // Handle Edit button
+                if(e.target && e.target.matches('.edit')){
+                    const idx = Number(e.target.getAttribute('data-idx'));
+                    const arr = read();
+                    const item = arr[idx];
+                    
+                    // Fill form with existing data
+                    document.getElementById('nama').value = item.nama || '';
+                    document.getElementById('kode').value = item.kode || '';
+                    document.getElementById('unit').value = item.unit || '';
+                    document.getElementById('ukuran').value = item.ukuran || '';
+                    document.getElementById('tahun').value = item.tahun || '';
+                    
+                    // Set editing mode
+                    editingIndex = idx;
+                    document.getElementById('addBtn').textContent = 'Update';
+                    modalTitle.textContent = 'Edit Data Baju Konduktif';
+                    
+                    // Show modal
+                    openModal();
+                }
+                
+                // Handle Delete button
+                if(e.target && e.target.matches('.del')){
+                    const idx = Number(e.target.getAttribute('data-idx'));
+                    if(!confirm('Hapus entri ini?')) return;
+                    const arr = read(); 
+                    arr.splice(idx,1); 
+                    write(arr); 
+                    render();
+                    alert('Data berhasil dihapus!');
+                }
+            });
+
+            render();
+        })();
+    </script>
+</body>
+</html>

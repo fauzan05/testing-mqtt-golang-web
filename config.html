@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfigurasi ESP32 - CJack V3</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <style>
+        .config-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .status-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .status-card h3 {
+            margin-top: 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-indicator.connected {
+            background: #4CAF50;
+            box-shadow: 0 0 8px #4CAF50;
+        }
+
+        .status-indicator.disconnected {
+            background: #f44336;
+            box-shadow: 0 0 8px #f44336;
+        }
+
+        .status-indicator.ap-mode {
+            background: #FF9800;
+            box-shadow: 0 0 8px #FF9800;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .info-value {
+            color: #333;
+            font-family: monospace;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0b7dda;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+        }
+
+        .wifi-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .wifi-item {
+            padding: 15px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wifi-item:hover {
+            background: #f5f5f5;
+            border-color: #2196F3;
+        }
+
+        .wifi-item.selected {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+
+        .wifi-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .wifi-signal {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+        }
+
+        .signal-bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+        }
+
+        .signal-bar {
+            width: 4px;
+            background: #ddd;
+            border-radius: 2px;
+        }
+
+        .signal-bar.active {
+            background: #4CAF50;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .loading:after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar"></div>
+    
+    <div class="content">
+        <h1>⚙️ Konfigurasi ESP32</h1>
+        
+        <div class="config-container">
+            <!-- Status ESP32 -->
+            <div class="status-card">
+                <h3>
+                    <span class="status-indicator" id="statusIndicator"></span>
+                    Status Koneksi ESP32
+                </h3>
+                <div id="statusInfo">
+                    <div class="loading">Mengecek status</div>
+                </div>
+            </div>
+
+            <!-- Alert -->
+            <div id="alert" class="alert"></div>
+
+            <!-- Scan WiFi -->
+            <div class="wifi-list">
+                <h3>📡 WiFi Networks</h3>
+                <button class="btn btn-primary" onclick="scanWiFi()">🔍 Scan WiFi</button>
+                <div id="wifiNetworks">
+                    <p style="color: #666; text-align: center; padding: 20px;">
+                        Klik "Scan WiFi" untuk melihat jaringan tersedia
+                    </p>
+                </div>
+            </div>
+
+            <!-- Form Connect WiFi -->
+            <div class="status-card">
+                <h3>📶 Connect ke WiFi</h3>
+                <form id="wifiForm" onsubmit="connectWiFi(event)">
+                    <div class="form-group">
+                        <label for="ssid">SSID WiFi:</label>
+                        <input type="text" id="ssid" name="ssid" placeholder="Nama WiFi (tethering HP)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" placeholder="Password WiFi">
+                    </div>
+                    <button type="submit" class="btn btn-success">📡 Connect</button>
+                </form>
+            </div>
+
+            <!-- Info -->
+            <div class="status-card">
+                <h3>ℹ️ Informasi</h3>
+                <p>
+                    <strong>Cara Menggunakan:</strong><br>
+                    1. Nyalakan tethering/hotspot di HP<br>
+                    2. Scan WiFi untuk melihat network tersedia<br>
+                    3. Pilih WiFi tethering HP (atau ketik manual)<br>
+                    4. Masukkan password dan klik Connect<br>
+                    5. Laptop dan ESP32 akan terhubung ke WiFi yang sama<br>
+                    6. ESP32 akan auto-reconnect setiap kali restart
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+    <script>
+        const ESP32_IP = 'http://192.168.4.1'; // Default AP mode IP
+        let selectedSSID = '';
+        let currentESP32IP = '';
+
+        // Load status on page load
+        window.addEventListener('load', () => {
+            checkESP32Status();
+            setInterval(checkESP32Status, 5000); // Update every 5 seconds
+        });
+
+        async function checkESP32Status() {
+            try {
+                // Try current IP first if available
+                const testIP = currentESP32IP || ESP32_IP;
+                const response = await fetch(`${testIP}/status`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStatusDisplay(data);
+                    if (data.ip && data.ip !== currentESP32IP) {
+                        currentESP32IP = `http://${data.ip}`;
+                    }
+                } else {
+                    showDisconnected();
+                }
+            } catch (error) {
+                console.error('ESP32 not reachable:', error);
+                showDisconnected();
+            }
+        }
+
+        function updateStatusDisplay(data) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusInfo = document.getElementById('statusInfo');
+
+            let statusClass = 'disconnected';
+            let statusText = 'Tidak Terhubung';
+
+            if (data.mode === 'Station' && data.connected) {
+                statusClass = 'connected';
+                statusText = '✓ Terhubung ke WiFi';
+            } else if (data.mode === 'AP') {
+                statusClass = 'ap-mode';
+                statusText = 'Mode Access Point';
+            }
+
+            indicator.className = `status-indicator ${statusClass}`;
+
+            statusInfo.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">${statusText}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Mode:</span>
+                    <span class="info-value">${data.mode}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">IP Address:</span>
+                    <span class="info-value">${data.ip}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">SSID:</span>
+                    <span class="info-value">${data.ssid}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Uptime:</span>
+                    <span class="info-value">${formatUptime(data.uptime)}</span>
+                </div>
+            `;
+        }
+
+        function showDisconnected() {
+            const indicator = document.getElementById('statusIndicator');
+            const statusInfo = document.getElementById('statusInfo');
+
+            indicator.className = 'status-indicator disconnected';
+            statusInfo.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">❌ ESP32 Tidak Terhubung</span>
+                </div>
+                <p style="color: #666; margin-top: 10px;">
+                    Pastikan ESP32 menyala dan terhubung ke jaringan yang sama dengan laptop.
+                </p>
+            `;
+        }
+
+        async function scanWiFi() {
+            const networksDiv = document.getElementById('wifiNetworks');
+            networksDiv.innerHTML = '<div class="loading">Scanning WiFi networks</div>';
+
+            try {
+                const testIP = currentESP32IP || ESP32_IP;
+                const response = await fetch(`${testIP}/scan`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayNetworks(data.networks);
+                } else {
+                    networksDiv.innerHTML = '<p style="color: #f44336;">❌ Gagal scan WiFi</p>';
+                }
+            } catch (error) {
+                console.error('Scan error:', error);
+                networksDiv.innerHTML = '<p style="color: #f44336;">❌ ESP32 tidak terhubung</p>';
+            }
+        }
+
+        function displayNetworks(networks) {
+            const networksDiv = document.getElementById('wifiNetworks');
+            
+            if (networks.length === 0) {
+                networksDiv.innerHTML = '<p style="color: #666;">Tidak ada network ditemukan</p>';
+                return;
+            }
+
+            let html = '';
+            networks.forEach(network => {
+                const signalBars = getSignalBars(network.signal);
+                html += `
+                    <div class="wifi-item" onclick="selectNetwork('${network.ssid}')">
+                        <div class="wifi-name">${network.ssid}</div>
+                        <div class="wifi-signal">
+                            <div class="signal-bars">${signalBars}</div>
+                            <span>${network.signal}%</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            networksDiv.innerHTML = html;
+        }
+
+        function getSignalBars(signal) {
+            let bars = '';
+            for (let i = 1; i <= 4; i++) {
+                const height = i * 5;
+                const active = signal >= (i * 25) ? 'active' : '';
+                bars += `<div class="signal-bar ${active}" style="height: ${height}px;"></div>`;
+            }
+            return bars;
+        }
+
+        function selectNetwork(ssid) {
+            selectedSSID = ssid;
+            document.getElementById('ssid').value = ssid;
+            
+            // Visual feedback
+            document.querySelectorAll('.wifi-item').forEach(item => {
+                item.classList.remove('selected');
+                if (item.querySelector('.wifi-name').textContent === ssid) {
+                    item.classList.add('selected');
+                }
+            });
+
+            showAlert('WiFi dipilih: ' + ssid, 'info');
+        }
+
+        async function connectWiFi(event) {
+            event.preventDefault();
+
+            const ssid = document.getElementById('ssid').value;
+            const password = document.getElementById('password').value;
+
+            if (!ssid) {
+                showAlert('Masukkan SSID WiFi', 'error');
+                return;
+            }
+
+            showAlert('Connecting ke ' + ssid + '...', 'info');
+
+            try {
+                const testIP = currentESP32IP || ESP32_IP;
+                const response = await fetch(`${testIP}/connect`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ssid: ssid,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('✓ Berhasil! IP ESP32: ' + data.ip, 'success');
+                    currentESP32IP = `http://${data.ip}`;
+                    
+                    setTimeout(() => {
+                        checkESP32Status();
+                    }, 3000);
+                } else {
+                    showAlert('❌ ' + data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Connect error:', error);
+                showAlert('❌ Gagal connect. ESP32 tidak merespon.', 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function formatUptime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${hours}h ${minutes}m ${secs}s`;
+        }
+    </script>
+</body>
+</html>

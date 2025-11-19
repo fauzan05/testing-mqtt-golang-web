@@ -1,0 +1,170 @@
+/* Sidebar Styles */
+.sidebar {
+    width: 220px;
+    background: linear-gradient(180deg, #4fc3d9 0%, #3bb6d6 100%);
+    padding: 24px 16px;
+    color: #fff;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.brand {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.brand .logo {
+    width: 46px;
+    height: 46px;
+    background: #fff;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.brand h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.nav {
+    list-style: none;
+    padding: 0;
+    margin-top: 8px;
+}
+
+.nav li {
+    padding: 0;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav li a {
+    display: block;
+    padding: 12px 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    font-weight: 500;
+}
+
+/* Hover effect */
+.nav li:hover {
+    transform: translateX(4px);
+}
+
+.nav li a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    padding-left: 16px;
+}
+
+/* Active state */
+.nav li.active {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(4px);
+}
+
+.nav li.active a {
+    background: rgba(255, 255, 255, 0.1);
+    padding-left: 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Click effect */
+.nav li:active {
+    transform: translateX(2px) scale(0.98);
+}
+
+.nav li a:active {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Sidebar bottom section */
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-bottom li {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for bottom items */
+.sidebar-bottom li:hover {
+    transform: translateX(4px);
+}
+
+/* Style for User link in bottom section */
+.sidebar-bottom li a {
+    display: block;
+    padding: 12px 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+}
+
+.sidebar-bottom li a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    padding-left: 16px;
+}
+
+.sidebar-bottom li a:active {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Style for Logout button */
+.logout-btn {
+    width: 100%;
+    display: block;
+    padding: 12px 10px;
+    background: transparent;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    padding-left: 16px;
+}
+
+.logout-btn:active {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Click effect for bottom items */
+.sidebar-bottom li:active {
+    transform: translateX(2px) scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .sidebar {
+        display: none;
+    }
+}

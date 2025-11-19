@@ -11,6 +11,7 @@ body {
     background: #f3f6f9;
     min-height: 100vh;
     padding: 0;
+    margin: 0;
     color: #222;
 }
 
@@ -19,69 +20,12 @@ body {
     min-height: 100vh;
 }
 
-.sidebar {
-    width: 220px;
-    background: linear-gradient(180deg, #4fc3d9 0%, #3bb6d6 100%);
-    padding: 24px 16px;
-    color: white;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.06);
-}
-
-.brand {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.brand .logo {
-    width: 46px;
-    height: 46px;
-    background: white;
-    border-radius: 8px;
-}
-
-.brand h2 { 
-    font-size: 18px; 
-    margin: 0; 
-}
-
-.sidebar .user { 
-    margin: 12px 0 18px; 
-    font-size: 13px; 
-}
-
-.nav {
-    list-style: none;
-    padding: 0;
-    margin-top: 8px;
-}
-
-.nav li { 
-    padding: 8px 12px; 
-    border-radius: 6px; 
-    margin-bottom: 4px; 
-    cursor: pointer; 
-}
-
-.nav li:hover { 
-    background: rgba(255,255,255,0.1); 
-}
-
-.nav li.active {
-    background: rgba(255,255,255,0.2);
-    font-weight: 600;
-}
-
-.nav li a {
-    color: white;
-    text-decoration: none;
-    display: block;
-}
+/* Sidebar styles moved to sidebar.css for better organization */
 
 .main {
     flex: 1;
     padding: 28px 32px;
+    margin-left: 220px !important; /* Width of fixed sidebar - force override */
 }
 
 .content-card {
@@ -132,5 +76,8 @@ button#submitBtn:hover {
 @media (max-width: 1000px) {
     .sidebar { 
         display: none; 
+    }
+    .main {
+        margin-left: 0; /* Remove margin when sidebar is hidden */
     }
 }

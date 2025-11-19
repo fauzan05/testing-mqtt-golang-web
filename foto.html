@@ -4,28 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CORE - Foto</title>
+    <script src="auth-check.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="logo"></div>
-                <div>
-                    <h2 style="font-size:28px; margin:0; font-weight:700;">CORE</h2>
-                    <div style="font-size:12px; opacity:0.95">Conductive Suit Reliability Evaluator</div>
-                </div>
-            </div>
-            <ul class="nav">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="pengujian.html">Pengujian</a></li>
-                <li><a href="histori.html">Histori</a></li>
-                <li class="active"><a href="foto.html">Foto Conductive Suite</a></li>
-            </ul>
-        </aside>
+        <div id="sidebar-root"></div>
 
-        <main class="main">
+        <main class="main" style="margin-left:220px;">
             <div class="topbar">
                 <h1 style="margin:0; color: #333;">📸 Foto Conductive Suite</h1>
             </div>
@@ -54,5 +41,6 @@
             </div>
         </main>
     </div>
+    <script src="sidebar.js"></script>
 </body>
 </html>
