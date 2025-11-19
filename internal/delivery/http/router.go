@@ -71,7 +71,7 @@ func (r *Router) setupStaticRoutes() {
 			c.Set("Pragma", "no-cache")
 			c.Set("Expires", "0")
 			c.Set("Content-Type", "text/css")
-			return c.SendFile("./" + filename)
+			return c.SendFile("./web/static/css/" + filename)
 		})
 	}
 
@@ -84,7 +84,7 @@ func (r *Router) setupStaticRoutes() {
 			c.Set("Pragma", "no-cache")
 			c.Set("Expires", "0")
 			c.Set("Content-Type", "application/javascript")
-			return c.SendFile("./" + filename)
+			return c.SendFile("./web/static/js/" + filename)
 		})
 	}
 
@@ -96,24 +96,24 @@ func (r *Router) setupStaticRoutes() {
 			c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
 			c.Set("Pragma", "no-cache")
 			c.Set("Expires", "0")
-			return c.SendFile("./" + filename)
+			return c.SendFile("./web/templates/" + filename)
 		})
 	}
 
 	// Serve images
-	r.app.Static("/images", "./", fiber.Static{
+	r.app.Static("/images", "./web/static/images", fiber.Static{
 		Browse: false,
 	})
 
-	// Serve all static files from root for now (compatibility)
-	r.app.Static("/", "./", fiber.Static{
+	// Serve static files from web/static
+	r.app.Static("/static", "./web/static", fiber.Static{
 		Browse: false,
 	})
 }
 
 func (r *Router) setupPublicRoutes() {
 	r.app.Get("/login", func(c *fiber.Ctx) error {
-		return c.SendFile("./login.html")
+		return c.SendFile("./web/templates/login.html")
 	})
 
 	// Redirect root based on auth status
@@ -143,7 +143,7 @@ func (r *Router) setupProtectedRoutes() {
 	for route, file := range pages {
 		filename := file
 		r.app.Get(route, authMW, func(c *fiber.Ctx) error {
-			return c.SendFile("./" + filename)
+			return c.SendFile("./web/templates/" + filename)
 		})
 	}
 }
