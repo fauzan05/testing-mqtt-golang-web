@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CORE - User Management</title>
-    <script src="auth-check.js"></script>
+    <script src="/js/auth-check.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="sidebar.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
     <style>
         .user-card {
             background: white;
@@ -71,7 +71,7 @@
 <body>
     <div class="app">
         <div id="sidebar-root"></div>
-        <script src="sidebar.js"></script>
+        <script src="/js/sidebar.js"></script>
         
         <main class="main" style="margin-left:220px;">
             <div class="content-card">
@@ -306,5 +306,8 @@
         `;
         document.head.appendChild(style);
     </script>
+    
+    <!-- User Page Script -->
+    <script src="/js/user.js"></script>
 </body>
 </html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} - CORE</title>
+    
+    <!-- Auth Check -->
+    <script src="/js/auth-check.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Common Styles -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+    
+    <!-- Chart.js (Optional - only for dashboard) -->
+    {{CHART_JS}}
+</head>
+<body>
+    <div class="app">
+        <div id="sidebar-root"></div>
+        <main class="main" style="margin-left:220px;">

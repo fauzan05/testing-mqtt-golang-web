@@ -62,34 +62,75 @@ func (r *Router) Setup() {
 }
 
 func (r *Router) setupStaticRoutes() {
-	// Serve CSS files with no-cache
-	cssFiles := []string{"styles.css", "sidebar.css", "form.css"}
-	for _, file := range cssFiles {
-		filename := file
-		r.app.Get("/"+filename, func(c *fiber.Ctx) error {
+	// Common CSS files (shared across multiple pages)
+	commonCSSFiles := map[string]string{
+		"styles.css":  "./web/static/css/common/styles.css",
+		"sidebar.css": "./web/static/css/common/sidebar.css",
+		"form.css":    "./web/static/css/common/form.css",
+	}
+	for route, path := range commonCSSFiles {
+		filePath := path
+		r.app.Get("/css/"+route, func(c *fiber.Ctx) error {
 			c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
 			c.Set("Pragma", "no-cache")
 			c.Set("Expires", "0")
 			c.Set("Content-Type", "text/css")
-			return c.SendFile("./web/static/css/" + filename)
+			return c.SendFile(filePath)
 		})
 	}
 
-	// Serve JS files with no-cache
-	jsFiles := []string{"sidebar.js", "auth-check.js"}
-	for _, file := range jsFiles {
-		filename := file
-		r.app.Get("/"+filename, func(c *fiber.Ctx) error {
+	// Page-specific CSS files
+	pageCSSFiles := map[string]string{
+		"data-conductive.css": "./web/static/css/pages/data-conductive/data-conductive.css",
+	}
+	for route, path := range pageCSSFiles {
+		filePath := path
+		r.app.Get("/css/"+route, func(c *fiber.Ctx) error {
+			c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			c.Set("Pragma", "no-cache")
+			c.Set("Expires", "0")
+			c.Set("Content-Type", "text/css")
+			return c.SendFile(filePath)
+		})
+	}
+
+	// Common JS files (shared across multiple pages)
+	commonJSFiles := map[string]string{
+		"sidebar.js":    "./web/static/js/common/sidebar.js",
+		"auth-check.js": "./web/static/js/common/auth-check.js",
+	}
+	for route, path := range commonJSFiles {
+		filePath := path
+		r.app.Get("/js/"+route, func(c *fiber.Ctx) error {
 			c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
 			c.Set("Pragma", "no-cache")
 			c.Set("Expires", "0")
 			c.Set("Content-Type", "application/javascript")
-			return c.SendFile("./web/static/js/" + filename)
+			return c.SendFile(filePath)
 		})
 	}
 
-	// Serve HTML fragments with no-cache
-	htmlFiles := []string{"sidebar.html"}
+	// Page-specific JS files
+	pageJSFiles := map[string]string{
+		"dashboard.js":       "./web/static/js/pages/dashboard/dashboard.js",
+		"data-conductive.js": "./web/static/js/pages/data-conductive/data-conductive.js",
+		"history.js":         "./web/static/js/pages/history/history.js",
+		"user.js":            "./web/static/js/pages/user/user.js",
+		"login.js":           "./web/static/js/pages/auth/login.js",
+	}
+	for route, path := range pageJSFiles {
+		filePath := path
+		r.app.Get("/js/"+route, func(c *fiber.Ctx) error {
+			c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			c.Set("Pragma", "no-cache")
+			c.Set("Expires", "0")
+			c.Set("Content-Type", "application/javascript")
+			return c.SendFile(filePath)
+		})
+	}
+
+	// Serve HTML fragments with no-cache (for includes/partials)
+	htmlFiles := []string{"sidebar.html", "header.html", "footer.html", "auth-header.html", "auth-footer.html"}
 	for _, file := range htmlFiles {
 		filename := file
 		r.app.Get("/"+filename, func(c *fiber.Ctx) error {
@@ -100,7 +141,17 @@ func (r *Router) setupStaticRoutes() {
 		})
 	}
 
-	// Serve images
+	// Serve image files
+	imageFiles := []string{"foto_conductive.png", "Logo_PLN.png", "logo-1.png"}
+	for _, file := range imageFiles {
+		filename := file
+		r.app.Get("/images/"+filename, func(c *fiber.Ctx) error {
+			c.Set("Cache-Control", "public, max-age=31536000") // Cache images for 1 year
+			return c.SendFile("./web/static/images/" + filename)
+		})
+	}
+
+	// Serve images folder (fallback for any other images)
 	r.app.Static("/images", "./web/static/images", fiber.Static{
 		Browse: false,
 	})

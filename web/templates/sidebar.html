@@ -1,23 +1,30 @@
-<!-- Updated: 2025-11-14 17:00 -->
+<!-- Updated: 2025-11-19 -->
 <link rel="stylesheet" href="sidebar.css">
-<aside class="sidebar" style="display:flex;flex-direction:column;min-height:100vh;">
+
+<aside class="sidebar">
+    <!-- Brand Section -->
     <div class="brand">
-        <div class="logo"></div>
+        <div><img src="/images/logo-1.png" alt="" width="100"></div>
         <div>
             <h2>CORE</h2>
-            <div style="font-size:13px; opacity:0.95">Conductive Suit Resistance Evaluator</div>
+            <p style="font-size:13px;opacity:0.95;margin:0">Conductive Suit Resistance Evaluator</p>
         </div>
     </div>
-    <ul class="nav" style="flex:1;">
+
+    <!-- Navigation Menu -->
+    <ul class="nav">
         <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/data-conductive">Data Konduktif</a></li>
         <li><a href="/history">Histori</a></li>
     </ul>
-    <div class="sidebar-bottom">
+
+    <!-- Bottom Section -->
+    <ul class="sidebar-bottom">
         <li><a href="/user">User</a></li>
         <li><button onclick="logout()" class="logout-btn">Logout</button></li>
-    </div>
+    </ul>
 </aside>
+
 <script>
 function logout() {
     if (confirm('Apakah Anda yakin ingin logout?')) {

@@ -38,6 +38,7 @@
     list-style: none;
     padding: 0;
     margin-top: 8px;
+    flex: 1;
 }
 
 .nav li {
@@ -95,6 +96,10 @@
     margin-top: auto;
     padding-top: 16px;
     border-top: 1px solid rgba(255,255,255,0.1);
+    list-style: none;
+    padding-left: 0;
+    padding-right: 0;
+    flex-shrink: 0;
 }
 
 .sidebar-bottom li {
