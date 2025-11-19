@@ -552,7 +552,6 @@ func main() {
 	tryESP32Request := func(method, path string, body []byte) (*http.Response, error) {
 		// Try AP mode first (direct WiFi)
 		apURL := "http://" + esp32APIP + path
-		log.Printf("Trying AP mode: %s", apURL)
 
 		var req *http.Request
 		var err error
@@ -565,16 +564,13 @@ func main() {
 			req.Header.Set("Content-Type", "application/json")
 			resp, err := httpClient.Do(req)
 			if err == nil {
-				log.Printf("✅ AP mode success")
 				return resp, nil
 			}
-			log.Printf("⚠️ AP mode failed: %v", err)
 		}
 
 		// Try Station mode if IP available (router WiFi)
 		if esp32StationIP != "" {
 			stationURL := "http://" + esp32StationIP + path
-			log.Printf("Trying Station mode: %s", stationURL)
 
 			if len(body) > 0 {
 				req, err = http.NewRequest(method, stationURL, bytes.NewBuffer(body))
@@ -585,10 +581,8 @@ func main() {
 				req.Header.Set("Content-Type", "application/json")
 				resp, err := httpClient.Do(req)
 				if err == nil {
-					log.Printf("✅ Station mode success")
 					return resp, nil
 				}
-				log.Printf("⚠️ Station mode failed: %v", err)
 			}
 		}
 

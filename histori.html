@@ -3,70 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORE - Histori</title>
+    <title>CORE Test - Histori</title>
+    <script src="auth-check.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="logo"></div>
-                <div>
-                    <h2 style="font-size:28px; margin:0; font-weight:700;">CORE</h2>
-                    <div style="font-size:12px; opacity:0.95">Conductive Suit Reliability Evaluator</div>
-                </div>
-            </div>
-            <ul class="nav">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="pengujian.html">Pengujian</a></li>
-                <li class="active"><a href="histori.html">Histori</a></li>
-                <li><a href="foto.html">Foto Conductive Suite</a></li>
-            </ul>
-        </aside>
+        <div id="sidebar-root"></div>
+        <script src="sidebar.js"></script>
 
-        <main class="main">
+        <main class="main" style="margin-left:220px;">
             <div class="topbar">
-                <h1 style="margin:0; color: #333;">📅 Histori Pengujian</h1>
+                <h1 style="margin:0; color: #333;">📋 Histori Pengujian</h1>
             </div>
 
             <div class="content-card">
-                <h2 style="color:#18a0d6; margin-top:0; margin-bottom:16px;">Riwayat Pengukuran</h2>
-                
-                <!-- Filter controls -->
-                <div class="mb-6 flex gap-4 items-center">
-                    <div class="flex items-center gap-2">
-                        <label class="font-semibold">Periode:</label>
-                        <input type="month" class="border rounded px-3 py-2">
+                <!-- Filter Section -->
+                <div style="margin-bottom:24px;padding:20px;background:#f9fafb;border-radius:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                    <div>
+                        <label style="display:block;font-weight:600;color:#374151;margin-bottom:8px;font-size:14px;">🔍 Filter Nama</label>
+                        <select id="filterNama" style="width:100%;padding:10px;border:2px solid #d1d5db;border-radius:8px;font-size:14px;">
+                            <option value="">-- Semua Nama --</option>
+                        </select>
                     </div>
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Filter
-                    </button>
+                    <div>
+                        <label style="display:block;font-weight:600;color:#374151;margin-bottom:8px;font-size:14px;">📊 Filter Status</label>
+                        <select id="filterStatus" style="width:100%;padding:10px;border:2px solid #d1d5db;border-radius:8px;font-size:14px;">
+                            <option value="">-- Semua Status --</option>
+                            <option value="Good">Good</option>
+                            <option value="Bad">Bad</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-weight:600;color:#374151;margin-bottom:8px;font-size:14px;">💡 Filter Rekomendasi</label>
+                        <select id="filterRekomendasi" style="width:100%;padding:10px;border:2px solid #d1d5db;border-radius:8px;font-size:14px;">
+                            <option value="">-- Semua Rekomendasi --</option>
+                            <option value="Cuci">Cuci</option>
+                            <option value="-">-</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- History table -->
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white">
+                <div class="overflow-x-auto" style="max-width:100%;">
+                    <table class="min-w-full bg-white" style="table-layout:fixed;">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Suit</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UPT</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width:10%;">Tanggal</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width:10%;">Kode Suit</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width:12%;">UPT</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width:18%;">Nama</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width:8%;">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width:12%;">Rekomendasi</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width:30%;">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <!-- Empty state -->
-                            <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                                    Belum ada data pengujian
+                        <tbody id="historyTbody" class="divide-y divide-gray-200">
+                            <tr data-static="true">
+                                <td class="px-4 py-3 text-sm text-gray-700">2025-11-09</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">A1B2C3D4</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Pulogadung</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Muhammad Wahyudi</td>
+                                <td class="px-4 py-3 text-sm text-green-600">Good</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">-</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <button class='export-btn bg-indigo-600 text-white px-2 py-1 rounded mr-1 text-xs' disabled title="Data static tidak bisa di-export">Export PDF</button>
+                                    <button class='delete-static-btn bg-red-600 text-white px-2 py-1 rounded text-xs' onclick="this.closest('tr').remove()">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr data-static="true">
+                                <td class="px-4 py-3 text-sm text-gray-700">2025-11-07</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">G7H8J9K1</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Pulogadung</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Andi Arjuna</td>
+                                <td class="px-4 py-3 text-sm text-red-600">Bad</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Cuci</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <button class='export-btn bg-indigo-600 text-white px-2 py-1 rounded mr-1 text-xs' disabled title="Data static tidak bisa di-export">Export PDF</button>
+                                    <button class='delete-static-btn bg-red-600 text-white px-2 py-1 rounded text-xs' onclick="this.closest('tr').remove()">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr data-static="true">
+                                <td class="px-4 py-3 text-sm text-gray-700">2025-10-30</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Z3X4C5V6</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Pulogadung</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Aji Nugraha Yusuf</td>
+                                <td class="px-4 py-3 text-sm text-green-600">Good</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">-</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <button class='export-btn bg-indigo-600 text-white px-2 py-1 rounded mr-1 text-xs' disabled title="Data static tidak bisa di-export">Export PDF</button>
+                                    <button class='delete-static-btn bg-red-600 text-white px-2 py-1 rounded text-xs' onclick="this.closest('tr').remove()">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr data-static="true">
+                                <td class="px-4 py-3 text-sm text-gray-700">2025-10-22</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Q1W2E3R4</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Pulogadung</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Okky Andreas T</td>
+                                <td class="px-4 py-3 text-sm text-red-600">Bad</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Cuci</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <button class='export-btn bg-indigo-600 text-white px-2 py-1 rounded mr-1 text-xs' disabled title="Data static tidak bisa di-export">Export PDF</button>
+                                    <button class='delete-static-btn bg-red-600 text-white px-2 py-1 rounded text-xs' onclick="this.closest('tr').remove()">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr data-static="true">
+                                <td class="px-4 py-3 text-sm text-gray-700">2025-09-15</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">M5N6B7V8</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Pulogadung</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Dimas Harry LF</td>
+                                <td class="px-4 py-3 text-sm text-green-600">Good</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">-</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <button class='export-btn bg-indigo-600 text-white px-2 py-1 rounded mr-1 text-xs' disabled title="Data static tidak bisa di-export">Export PDF</button>
+                                    <button class='delete-static-btn bg-red-600 text-white px-2 py-1 rounded text-xs' onclick="this.closest('tr').remove()">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr data-static="true">
+                                <td class="px-4 py-3 text-sm text-gray-700">2025-08-02</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">P0L9K8J7</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Pulogadung</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Fridom Tusano Hadi</td>
+                                <td class="px-4 py-3 text-sm text-red-600">Bad</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">Cuci</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">
+                                    <button class='export-btn bg-indigo-600 text-white px-2 py-1 rounded mr-1 text-xs' disabled title="Data static tidak bisa di-export">Export PDF</button>
+                                    <button class='delete-static-btn bg-red-600 text-white px-2 py-1 rounded text-xs' onclick="this.closest('tr').remove()">Hapus</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Export modal -->
+    <div id="exportModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-40">
+        <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/2 p-6">
+            <h3 class="text-lg font-semibold mb-3">Export Hasil Pengujian</h3>
+            <div id="exportSummary" class="text-sm text-gray-700 mb-4"></div>
+            <div class="flex gap-3">
+                <button id="downloadPdfBtn" class="bg-blue-600 text-white px-4 py-2 rounded">Download PDF</button>
+                <button id="emailPdfBtn" class="bg-green-600 text-white px-4 py-2 rounded">Kirim via Email</button>
+                <button id="closeModalBtn" class="ml-auto bg-gray-200 px-3 py-1 rounded">Batal</button>
+            </div>
+            <div id="emailForm" class="mt-4 hidden">
+                <label class="text-sm">Alamat email:</label>
+                <input id="emailTo" type="email" class="mt-1 block w-full rounded border-gray-300 px-3 py-2">
+                <div class="mt-3 text-right">
+                    <button id="sendEmailConfirm" class="bg-blue-600 text-white px-4 py-2 rounded">Kirim</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Filter functionality
+        function applyFilters() {
+            const filterNama = document.getElementById('filterNama').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterRekomendasi = document.getElementById('filterRekomendasi').value;
+            
+            const tbody = document.getElementById('historyTbody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            let visibleCount = 0;
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                
+                if (cells.length < 4) continue; // Skip invalid rows
+                
+                const nama = cells[3].textContent.trim();
+                const status = cells[4].textContent.trim();
+                const rekomendasi = cells[5].textContent.trim();
+                
+                let showRow = true;
+                
+                // Filter by nama (exact match)
+                if (filterNama && nama !== filterNama) {
+                    showRow = false;
+                }
+                
+                // Filter by status
+                if (filterStatus && status !== filterStatus) {
+                    showRow = false;
+                }
+                
+                // Filter by rekomendasi
+                if (filterRekomendasi && rekomendasi !== filterRekomendasi) {
+                    showRow = false;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+                if (showRow) visibleCount++;
+            }
+            
+            // Show message if no results
+            if (visibleCount === 0) {
+                // Check if "no results" row already exists
+                let noResultsRow = document.getElementById('noResultsRow');
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'noResultsRow';
+                    noResultsRow.innerHTML = '<td colspan="7" style="padding:20px;text-align:center;color:#9ca3af;font-style:italic;">Tidak ada data yang sesuai dengan filter</td>';
+                    tbody.appendChild(noResultsRow);
+                }
+                noResultsRow.style.display = '';
+            } else {
+                const noResultsRow = document.getElementById('noResultsRow');
+                if (noResultsRow) {
+                    noResultsRow.style.display = 'none';
+                }
+            }
+        }
+        
+        // Populate nama dropdown with unique names
+        function populateNamaList() {
+            const tbody = document.getElementById('historyTbody');
+            const rows = tbody.getElementsByTagName('tr');
+            const namaSet = new Set();
+            
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                if (cells.length >= 4) {
+                    const nama = cells[3].textContent.trim();
+                    if (nama) namaSet.add(nama);
+                }
+            }
+            
+            const select = document.getElementById('filterNama');
+            select.innerHTML = '<option value="">-- Semua Nama --</option>';
+            
+            // Sort names alphabetically
+            const sortedNames = Array.from(namaSet).sort();
+            sortedNames.forEach(nama => {
+                const option = document.createElement('option');
+                option.value = nama;
+                option.textContent = nama;
+                select.appendChild(option);
+            });
+        }
+        
+        // Attach filter event listeners after DOM is ready
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('filterNama').addEventListener('change', applyFilters);
+            document.getElementById('filterStatus').addEventListener('change', applyFilters);
+            document.getElementById('filterRekomendasi').addEventListener('change', applyFilters);
+        });
+        
+        // Helper to render existing static rows are already in HTML; now append any saved history from localStorage
+        (function(){
+            const histKey = 'core_history_v1';
+            const stored = JSON.parse(localStorage.getItem(histKey) || '[]');
+            const tbody = document.getElementById('historyTbody');
+            // append stored records (newest first)
+            stored.forEach((rec, idx)=>{
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-4 py-3 text-sm text-gray-700">${rec.date}</td>
+                    <td class="px-4 py-3 text-sm text-gray-700">${rec.code}</td>
+                    <td class="px-4 py-3 text-sm text-gray-700">${rec.upt}</td>
+                    <td class="px-4 py-3 text-sm text-gray-700">${rec.name}</td>
+                    <td class="px-4 py-3 text-sm ${rec.status === 'Bad' ? 'text-red-600' : 'text-green-600'}">${rec.status}</td>
+                    <td class="px-4 py-3 text-sm text-gray-700">${rec.rekomendasi}</td>
+                    <td class="px-4 py-3 text-sm text-gray-700">
+                        <button class='export-btn bg-indigo-600 text-white px-2 py-1 rounded mr-1 text-xs' data-idx='${idx}'>Export PDF</button>
+                        <button class='delete-btn bg-red-600 text-white px-2 py-1 rounded text-xs' data-idx='${idx}'>Hapus</button>
+                    </td>
+                `;
+                // insert at top after existing static rows: append to tbody so will appear after static ones
+                tbody.appendChild(tr);
+            });
+            
+            // Populate nama list after all rows are added
+            populateNamaList();
+
+            // Modal controls
+            const modal = document.getElementById('exportModal');
+            let currentRecord = null;
+
+            function openModalForRecord(rec){
+                currentRecord = rec;
+                const sum = document.getElementById('exportSummary');
+                let html = `<strong>Kode:</strong> ${rec.code} <br><strong>Nama:</strong> ${rec.name} <br><strong>Tanggal:</strong> ${rec.date}`;
+                // show basic readings summary
+                html += '<div class="mt-2"><table class="text-sm text-gray-700 w-full">';
+                html += '<tr><td style="width:80px">R</td><td>Nilai (Ω)</td></tr>';
+                for(let i=1;i<=8;i++){
+                    html += `<tr><td>R${i}</td><td>${rec.readings['R'+i] || '-'}</td></tr>`;
+                }
+                html += '</table></div>';
+                sum.innerHTML = html;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            document.body.addEventListener('click', function(e){
+                // Handle Export button
+                if(e.target && e.target.matches('.export-btn')){
+                    // get index from data-idx
+                    const idx = e.target.getAttribute('data-idx');
+                    if(idx === null || idx === undefined) return; // static data, skip
+                    const stored = JSON.parse(localStorage.getItem(histKey) || '[]');
+                    const rec = stored[idx];
+                    if(!rec){ alert('Record tidak ditemukan'); return; }
+                    openModalForRecord(rec);
+                }
+                
+                // Handle Delete button
+                if(e.target && e.target.matches('.delete-btn')){
+                    const idx = Number(e.target.getAttribute('data-idx'));
+                    if(!confirm('Hapus data ini? Tindakan ini tidak dapat dibatalkan.')) return;
+                    
+                    // Remove from localStorage
+                    const stored = JSON.parse(localStorage.getItem(histKey) || '[]');
+                    stored.splice(idx, 1);
+                    localStorage.setItem(histKey, JSON.stringify(stored));
+                    
+                    // Remove row from table
+                    e.target.closest('tr').remove();
+                    alert('Data berhasil dihapus!');
+                    
+                    // Refresh the page to update indices
+                    location.reload();
+                }
+            });
+
+            document.getElementById('closeModalBtn').addEventListener('click', ()=>{ modal.classList.add('hidden'); modal.classList.remove('flex'); document.getElementById('emailForm').classList.add('hidden'); });
+
+            // PDF generation using jsPDF
+            async function generatePdf(rec){
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({unit:'pt', format:'a4'});
+                const left = 40;
+                let y = 40;
+                doc.setFontSize(12);
+                doc.text('PROSEDUR PEMELIHARAAN PERALATAN', left, y); y += 18;
+                doc.setFontSize(10);
+                doc.text('PENGUKURAN RESISTANSI CONDUCTIVE SUITS', left, y); y += 24;
+                doc.text(`UPT: ${rec.upt}`, left, y); doc.text(`Tanggal: ${rec.date}`, 350, y); y += 18;
+                doc.text(`Nama Pengguna: ${rec.name}`, left, y); doc.text(`Kode Suit: ${rec.code}`, 350, y); y += 24;
+
+                // table header
+                doc.setFontSize(10);
+                doc.text('No', left, y);
+                doc.text('Titik Pengukuran', left + 60, y);
+                doc.text('Hasil Pengukuran (Ohm)', left + 240, y);
+                y += 12;
+                for(let i=1;i<=8;i++){
+                    const label = 'R' + i;
+                    const val = rec.readings['R'+i] || '-';
+                    y += 18;
+                    doc.text(String(i), left, y);
+                    doc.text(label, left + 60, y);
+                    doc.text(String(val), left + 240, y);
+                }
+
+                y += 30;
+                doc.text('Status: ' + rec.status, left, y);
+                doc.text('Rekomendasi: ' + rec.rekomendasi, left + 200, y);
+
+                return doc;
+            }
+
+            document.getElementById('downloadPdfBtn').addEventListener('click', async ()=>{
+                if(!currentRecord) return;
+                const doc = await generatePdf(currentRecord);
+                const filename = `hasil_pengujian_${currentRecord.code}.pdf`;
+                doc.save(filename);
+                // close modal
+                modal.classList.add('hidden'); modal.classList.remove('flex');
+            });
+
+            document.getElementById('emailPdfBtn').addEventListener('click', ()=>{
+                // show email input
+                document.getElementById('emailForm').classList.remove('hidden');
+            });
+
+            document.getElementById('sendEmailConfirm').addEventListener('click', async ()=>{
+                const to = document.getElementById('emailTo').value;
+                if(!to){ alert('Masukkan alamat email'); return; }
+                if(!currentRecord) return;
+                const doc = await generatePdf(currentRecord);
+                const filename = `hasil_pengujian_${currentRecord.code}.pdf`;
+                // trigger download so user has the file to attach
+                doc.save(filename);
+                // open mail client with prefilled subject/body and instruct user to attach file
+                const subject = encodeURIComponent('Hasil Pengujian ' + currentRecord.code);
+                const body = encodeURIComponent('Silakan temukan terlampir hasil pengujian. (Lakukan attach file ' + filename + ' yang telah diunduh otomatis)');
+                window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+                modal.classList.add('hidden'); modal.classList.remove('flex'); document.getElementById('emailForm').classList.add('hidden');
+            });
+        })();
+    </script>
             </div>
         </main>
     </div>

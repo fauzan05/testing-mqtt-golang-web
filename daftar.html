@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Data Konduktif - CORE</title>
+    <title>Data Konduktif - CORE Test</title>
     <script src="auth-check.js"></script>
     <link rel="stylesheet" href="sidebar.css">
     <style>
@@ -164,6 +164,7 @@
                                         <th style="padding:6px">Unit</th>
                                         <th style="padding:6px">Ukuran</th>
                                         <th style="padding:6px;width:90px">Tahun</th>
+                                        <th style="padding:6px;width:80px">Usia</th>
                                         <th style="padding:6px;width:90px">Aksi</th>
                                     </tr>
                                 </thead>
@@ -237,7 +238,9 @@
                 const tbody = document.querySelector('#table tbody');
                 const arr = read();
                 tbody.innerHTML = '';
+                const currentYear = new Date().getFullYear();
                 arr.forEach((it, idx)=>{
+                    const usia = it.tahun ? currentYear - parseInt(it.tahun) : '-';
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="padding:6px;border-bottom:1px solid #eee">${idx+1}</td>
@@ -246,7 +249,9 @@
                         <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.unit)}</td>
                         <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.ukuran)}</td>
                         <td style="padding:6px;border-bottom:1px solid #eee">${escape(it.tahun)}</td>
+                        <td style="padding:6px;border-bottom:1px solid #eee">${usia} tahun</td>
                         <td style="padding:6px;border-bottom:1px solid #eee">
+                            <button data-idx="${idx}" class="detail" style="background:#3498db;color:#fff;padding:4px 8px;border-radius:6px;border:none;margin-right:4px">Detail</button>
                             <button data-idx="${idx}" class="edit" style="background:#ffa500;color:#fff;padding:4px 8px;border-radius:6px;border:none;margin-right:4px">Edit</button>
                             <button data-idx="${idx}" class="del" style="background:#e74c3c;color:#fff;padding:4px 8px;border-radius:6px;border:none">Hapus</button>
                         </td>
@@ -292,6 +297,32 @@
             });
 
             document.body.addEventListener('click', function(e){
+                // Handle Detail button
+                if(e.target && e.target.matches('.detail')){
+                    const idx = Number(e.target.getAttribute('data-idx'));
+                    const arr = read();
+                    const item = arr[idx];
+                    const currentYear = new Date().getFullYear();
+                    const usia = item.tahun ? currentYear - parseInt(item.tahun) : 'N/A';
+                    
+                    const detailMsg = `
+═══════════════════════════════
+    DETAIL BAJU KONDUKTIF
+═══════════════════════════════
+
+👤 Nama      : ${item.nama}
+🔖 Kode      : ${item.kode}
+🏢 Unit      : ${item.unit}
+📏 Ukuran    : ${item.ukuran}
+📅 Tahun     : ${item.tahun}
+⏳ Usia Baju : ${usia} tahun
+
+═══════════════════════════════
+                    `.trim();
+                    
+                    alert(detailMsg);
+                }
+                
                 // Handle Edit button
                 if(e.target && e.target.matches('.edit')){
                     const idx = Number(e.target.getAttribute('data-idx'));
