@@ -130,14 +130,10 @@ func (r *Router) setupProtectedRoutes() {
 	authMW := middleware.AuthMiddleware(r.authUC)
 
 	pages := map[string]string{
-		"/dashboard":  "dashboard.html",
-		"/pengujian":  "pengujian.html",
-		"/config":     "config.html",
-		"/daftar":     "daftar.html",
-		"/histori":    "histori.html",
-		"/foto":       "foto.html",
-		"/user":       "user.html",
-		"/index.html": "index.html",
+		"/dashboard":       "dashboard.html",
+		"/data-conductive": "data-conductive.html",
+		"/history":         "history.html",
+		"/user":            "user.html",
 	}
 
 	for route, file := range pages {

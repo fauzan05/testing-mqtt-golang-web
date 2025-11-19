@@ -4,34 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CORE - Histori</title>
+    <script src="auth-check.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="sidebar.css">
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="logo"></div>
-                <div>
-                    <h2 style="font-size:28px; margin:0; font-weight:700;">CORE</h2>
-                    <div style="font-size:12px; opacity:0.95">Conductive Suit Reliability Evaluator</div>
-                </div>
-            </div>
-            <ul class="nav">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="pengujian.html">Pengujian</a></li>
-                <li class="active"><a href="histori.html">Histori</a></li>
-                <li><a href="foto.html">Foto Conductive Suite</a></li>
-            </ul>
-        </aside>
+        <div id="sidebar-root"></div>
 
-        <main class="main">
-            <div class="topbar">
-                <h1 style="margin:0; color: #333;">📅 Histori Pengujian</h1>
-            </div>
-
+        <main class="main" style="margin-left:220px;">
             <div class="content-card">
-                <h2 style="color:#18a0d6; margin-top:0; margin-bottom:16px;">Riwayat Pengukuran</h2>
+                <h2 style="color:#18a0d6; margin-top:0; margin-bottom:16px;">📅 Histori Pengujian</h2>
                 
                 <!-- Filter controls -->
                 <div class="mb-6 flex gap-4 items-center">
@@ -70,5 +54,6 @@
             </div>
         </main>
     </div>
+    <script src="sidebar.js"></script>
 </body>
 </html>
