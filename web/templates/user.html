@@ -9,6 +9,55 @@
     <link href="/css/sidebar.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
     <style>
+        .logout-toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .logout-toggle-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .logout-toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #10b981;
+            border-radius: 34px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .logout-toggle-switch.off {
+            background: #ef4444;
+        }
+        .logout-toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .logout-toggle-switch.off .logout-toggle-slider {
+            transform: translateX(24px);
+        }
+        .logout-toggle-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+        }
         .user-card {
             background: white;
             border-radius: 12px;
@@ -69,16 +118,25 @@
     </style>
 </head>
 <body>
+    <!-- Logout Toggle -->
+    <div class="logout-toggle-container">
+        <span class="logout-toggle-label">Login</span>
+        <div class="logout-toggle-switch" id="logoutToggle" onclick="handleLogoutToggle()">
+            <div class="logout-toggle-slider"></div>
+        </div>
+        <span class="logout-toggle-text" id="toggleStatus">ON</span>
+    </div>
+
     <div class="app">
         <div id="sidebar-root"></div>
         <script src="/js/sidebar.js"></script>
         
         <main class="main" style="margin-left:220px;">
             <div class="content-card">
-                <h2 style="color:#18a0d6;margin-bottom:24px;">👤 User Management</h2>
+                <h2 style="color:#18a0d6;margin-bottom:24px;">User Management</h2>
                 
                 <div class="info-box">
-                    <div style="font-weight:600;color:#0c4a6e;margin-bottom:4px;">ℹ️ Informasi User</div>
+                    <div style="font-weight:600;color:#0c4a6e;margin-bottom:4px;">ℹInformasi User</div>
                     <div style="color:#075985;font-size:14px;">
                         User yang sedang login: <strong id="currentUser">-</strong><br>
                         Waktu login: <strong id="loginTime">-</strong>
@@ -87,7 +145,7 @@
 
                 <!-- Change Username -->
                 <div class="user-card">
-                    <h3 style="color:#374151;margin-bottom:16px;font-size:18px;">📝 Ganti Username</h3>
+                    <h3 style="color:#374151;margin-bottom:16px;font-size:18px;">Ganti Username</h3>
                     <form id="changeUsernameForm">
                         <div style="margin-bottom:16px;">
                             <label style="display:block;font-weight:600;color:#374151;margin-bottom:8px;font-size:14px;">Username Baru</label>
@@ -98,14 +156,14 @@
                             <input type="password" id="confirmPasswordUsername" class="input-field" placeholder="Masukkan password Anda" required>
                         </div>
                         <button type="submit" class="btn-primary">
-                            <span id="btnTextUsername">💾 Simpan Username</span>
+                            <span id="btnTextUsername">Simpan Username</span>
                         </button>
                     </form>
                 </div>
 
                 <!-- Change Password -->
                 <div class="user-card">
-                    <h3 style="color:#374151;margin-bottom:16px;font-size:18px;">🔒 Ganti Password</h3>
+                    <h3 style="color:#374151;margin-bottom:16px;font-size:18px;">Ganti Password</h3>
                     <form id="changePasswordForm">
                         <div style="margin-bottom:16px;">
                             <label style="display:block;font-weight:600;color:#374151;margin-bottom:8px;font-size:14px;">Password Lama</label>
@@ -120,19 +178,19 @@
                             <input type="password" id="confirmPassword" class="input-field" placeholder="Ulangi password baru" required>
                         </div>
                         <button type="submit" class="btn-primary">
-                            <span id="btnTextPassword">🔐 Simpan Password</span>
+                            <span id="btnTextPassword">Simpan Password</span>
                         </button>
                     </form>
                 </div>
 
                 <!-- Logout -->
                 <div class="user-card">
-                    <h3 style="color:#374151;margin-bottom:16px;font-size:18px;">🚪 Keluar dari Sistem</h3>
+                    <h3 style="color:#374151;margin-bottom:16px;font-size:18px;">Keluar dari Sistem</h3>
                     <p style="color:#6b7280;font-size:14px;margin-bottom:16px;">
                         Klik tombol di bawah untuk logout dari sistem. Anda akan diarahkan ke halaman login.
                     </p>
                     <button onclick="logout()" class="btn-danger">
-                        🚪 Logout
+                        Logout
                     </button>
                 </div>
             </div>
@@ -206,7 +264,7 @@
 
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.6';
-            btnText.textContent = '⏳ Menyimpan...';
+            btnText.textContent = 'Menyimpan...';
 
             try {
                 const response = await fetch('/api/change-username', {
@@ -218,12 +276,12 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    showAlert('✅ Username berhasil diubah!', 'success');
+                    showAlert('Username berhasil diubah!', 'success');
                     document.getElementById('newUsername').value = '';
                     document.getElementById('confirmPasswordUsername').value = '';
                     displayUserInfo();
                 } else {
-                    showAlert('❌ ' + (data.message || 'Gagal mengubah username!'), 'error');
+                    showAlert('❌' + (data.message || 'Gagal mengubah username!'), 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -231,7 +289,7 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = '1';
-                btnText.textContent = '💾 Simpan Username';
+                btnText.textContent = 'Simpan Username';
             }
         });
 
@@ -246,18 +304,18 @@
             const submitBtn = this.querySelector('button[type="submit"]');
 
             if (newPassword !== confirmPassword) {
-                showAlert('❌ Password baru tidak cocok!', 'error');
+                showAlert('Password baru tidak cocok!', 'error');
                 return;
             }
 
             if (newPassword.length < 5) {
-                showAlert('❌ Password minimal 5 karakter!', 'error');
+                showAlert('Password minimal 5 karakter!', 'error');
                 return;
             }
 
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.6';
-            btnText.textContent = '⏳ Menyimpan...';
+            btnText.textContent = 'Menyimpan...';
 
             try {
                 const response = await fetch('/api/change-password', {
@@ -269,7 +327,7 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    showAlert('✅ Password berhasil diubah!', 'success');
+                    showAlert('Password berhasil diubah!', 'success');
                     document.getElementById('oldPassword').value = '';
                     document.getElementById('newPassword').value = '';
                     document.getElementById('confirmPassword').value = '';
@@ -282,7 +340,7 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = '1';
-                btnText.textContent = '🔐 Simpan Password';
+                btnText.textContent = 'Simpan Password';
             }
         });
 
@@ -305,6 +363,14 @@
             }
         `;
         document.head.appendChild(style);
+    </script>
+
+    <script>
+        function handleLogoutToggle() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                window.location.href = '/api/logout';
+            }
+        }
     </script>
     
     <!-- User Page Script -->

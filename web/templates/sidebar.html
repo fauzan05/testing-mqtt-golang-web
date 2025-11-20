@@ -1,34 +1,85 @@
-<!-- Updated: 2025-11-19 -->
+<!-- Updated: 2025-11-20 -->
 <link rel="stylesheet" href="sidebar.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <aside class="sidebar">
     <!-- Brand Section -->
     <div class="brand">
-        <div><img src="/images/logo-1.png" alt="" width="100"></div>
-        <div>
-            <h2>CORE</h2>
-            <p style="font-size:13px;opacity:0.95;margin:0">Conductive Suit Resistance Evaluator</p>
-        </div>
+        <img src="/images/logo-1.png" alt="CORE Logo" class="brand-logo">
+        <h2>CORE Test</h2>
     </div>
 
     <!-- Navigation Menu -->
     <ul class="nav">
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/data-conductive">Data Konduktif</a></li>
-        <li><a href="/history">Histori</a></li>
-    </ul>
-
-    <!-- Bottom Section -->
-    <ul class="sidebar-bottom">
-        <li><a href="/user">User</a></li>
-        <li><button onclick="logout()" class="logout-btn">Logout</button></li>
+        <li data-page="dashboard">
+            <a href="/dashboard">
+                <div class="nav-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li data-page="data-conductive">
+            <a href="/data-conductive">
+                <div class="nav-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Data Konduktif</span>
+            </a>
+        </li>
+        <li data-page="history">
+            <a href="/history">
+                <div class="nav-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <span>Histori</span>
+            </a>
+        </li>
+        <li data-page="user">
+            <a href="/user">
+                <div class="nav-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span>User</span>
+            </a>
+        </li>
     </ul>
 </aside>
 
 <script>
-function logout() {
-    if (confirm('Apakah Anda yakin ingin logout?')) {
-        window.location.href = '/api/logout';
+// Dark mode toggle functionality
+const darkModeToggle = document.getElementById('darkModeToggle');
+const toggleLabel = document.querySelector('.toggle-label');
+
+if (darkModeToggle && toggleLabel) {
+    darkModeToggle.addEventListener('change', function() {
+        if (this.checked) {
+            toggleLabel.textContent = 'On';
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            toggleLabel.textContent = 'Off';
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+
+    // Load dark mode preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        darkModeToggle.checked = true;
+        toggleLabel.textContent = 'On';
+        document.body.classList.add('dark-mode');
     }
 }
+
+// Set active menu item based on current page
+const currentPath = window.location.pathname;
+const navItems = document.querySelectorAll('.nav li');
+
+navItems.forEach(item => {
+    const link = item.querySelector('a');
+    if (link && link.getAttribute('href') === currentPath) {
+        item.classList.add('active');
+    }
+});
 </script>

@@ -13,6 +13,53 @@ body {
     padding: 0;
     margin: 0;
     color: #222;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background: #1a1a1a;
+    color: #e0e0e0;
+}
+
+body.dark-mode .content-card {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="month"] {
+    background: #3a3a3a;
+    color: #e0e0e0;
+    border: 1px solid #4a4a4a;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #e0e0e0;
+}
+
+body.dark-mode table {
+    color: #e0e0e0;
+}
+
+body.dark-mode table th {
+    background: #3a3a3a;
+    color: #e0e0e0;
+}
+
+body.dark-mode table td {
+    border-color: #4a4a4a;
+}
+
+body.dark-mode table tr:hover {
+    background: #333;
 }
 
 .app {
@@ -25,7 +72,7 @@ body {
 .main {
     flex: 1;
     padding: 28px 32px;
-    margin-left: 220px !important; /* Width of fixed sidebar - force override */
+    margin-left: 140px !important; /* Width of fixed sidebar - force override */
 }
 
 .content-card {

@@ -3,19 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORE - Histori</title>
+    <title>CORE - History</title>
     <script src="/js/auth-check.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="/css/styles.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/sidebar.css">
+    <style>
+        .logout-toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .logout-toggle-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .logout-toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #10b981;
+            border-radius: 34px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .logout-toggle-switch.off {
+            background: #ef4444;
+        }
+        .logout-toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .logout-toggle-switch.off .logout-toggle-slider {
+            transform: translateX(24px);
+        }
+        .logout-toggle-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+    </style>
 </head>
 <body>
+    <!-- Logout Toggle -->
+    <div class="logout-toggle-container">
+        <span class="logout-toggle-label">Login</span>
+        <div class="logout-toggle-switch" id="logoutToggle" onclick="handleLogoutToggle()">
+            <div class="logout-toggle-slider"></div>
+        </div>
+        <span class="logout-toggle-text" id="toggleStatus">ON</span>
+    </div>
+
+    <script>
+        function handleLogoutToggle() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                window.location.href = '/api/logout';
+            }
+        }
+    </script>
+
     <div class="app">
         <div id="sidebar-root"></div>
 
-        <main class="main" style="margin-left:220px;">
+        <main class="main" style="margin-left:140px;">
             <div class="content-card">
-                <h2 style="color:#18a0d6; margin-top:0; margin-bottom:16px;">📅 Histori Pengujian</h2>
+                <h2 style="color:#18a0d6; margin-top:0; margin-bottom:16px;">Histori Pengujian</h2>
                 
                 <!-- Filter controls -->
                 <div class="mb-6 flex gap-4 items-center">

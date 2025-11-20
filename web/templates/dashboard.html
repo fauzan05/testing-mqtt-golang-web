@@ -9,12 +9,80 @@
     <link href="/css/styles.css" rel="stylesheet">
     <link href="/css/sidebar.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .logout-toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .logout-toggle-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .logout-toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #10b981;
+            border-radius: 34px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .logout-toggle-switch.off {
+            background: #ef4444;
+        }
+        .logout-toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .logout-toggle-switch.off .logout-toggle-slider {
+            transform: translateX(24px);
+        }
+        .logout-toggle-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+    </style>
 </head>
 <body>
+    <!-- Logout Toggle -->
+    <div class="logout-toggle-container">
+        <span class="logout-toggle-label">Login</span>
+        <div class="logout-toggle-switch" id="logoutToggle" onclick="handleLogoutToggle()">
+            <div class="logout-toggle-slider"></div>
+        </div>
+        <span class="logout-toggle-text" id="toggleStatus">ON</span>
+    </div>
+
+    <script>
+        function handleLogoutToggle() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                window.location.href = '/api/logout';
+            }
+        }
+    </script>
+
     <div class="app">
         <div id="sidebar-root"></div>
 
-        <main class="main" style="margin-left:220px;">
+        <main class="main" style="margin-left:140px;">
             <div class="topbar">
             </div>
 
@@ -30,13 +98,13 @@
                     </div>
                     
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Pengujian Bulan Ini</h3>
-                        <p class="text-3xl font-bold text-green-600">5</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Kondisi Good</h3>
+                        <p class="text-3xl font-bold text-green-600">234</p>
                     </div>
                     
                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Status Alat</h3>
-                        <p class="text-xl font-semibold text-emerald-600">Connected</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Kondisi Bad</h3>
+                        <p class="text-3xl font-bold text-red-600">5</p>
                     </div>
                 </div>
 
